@@ -1,15 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import Prose from '../components/Prose.astro'
 ---
 
 <Layout title="ily.rs">
-    <div class="flex flex-col items-center justify-center min-h-screen bg-white">
-        <p class="font-mono font-bold text-center text-gray-500 max-w-prose">
+    <Prose>
+        <p slot="body">
             he felt all at once like an ineffectual moth, fluttering at the windowpane of reality, dimly seeing it from outside
         </p>
-        <br />
-        <p class="font-mono text-justify text-gray-400 max-w-prose">
-            email <span class="font-bold">lew@ily.rs</span>
-        </p>
-    </div>
+        <span slot="by">email</span>
+        <span slot="credit">lew@ily.rs</span>
+    </Prose>
 </Layout>

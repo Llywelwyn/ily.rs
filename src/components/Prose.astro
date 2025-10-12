@@ -1,0 +1,24 @@
+---
+interface Props {
+    justify: boolean;
+    no_br: boolean;
+}
+const { justify, no_br } = Astro.props;
+---
+
+<div class="flex flex-col items-center justify-center min-h-screen bg-white">
+    <div class:list={[
+            "font-mono font-bold text-gray-500 max-w-prose",
+            { "text-justify": justify },
+            { "text-center": !justify }
+         ]}>
+        <slot name="body" /> 
+    </div>
+    {!no_br && <br />}
+    <div class="font-mono text-center text-gray-500 max-w-prose">
+        <slot name="by" />
+        <span class="font-bold">
+            <slot name="credit" />
+        </span>
+    </div>
+</div>

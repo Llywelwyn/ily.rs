@@ -4,7 +4,7 @@ draft: true
 date: 12/10/2025
 ---
 
-*some*
+_some_
 
 placeholder
 

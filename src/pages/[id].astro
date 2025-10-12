@@ -1,19 +1,22 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Prose from '../components/Prose.astro';
-import { getCollection, render } from 'astro:content';
+import Layout from "../layouts/Layout.astro";
+import Prose from "../components/Prose.astro";
+import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-    const mds = await getCollection('md', ({ data }) => { return import.meta.env.PROD ? data.draft !== true : true; });
-    return mds.map(md => ({ params: { id: md.id }, props: { md }}));
+  const mds = await getCollection("md", ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true;
+  });
+  return mds.map((md) => ({ params: { id: md.id }, props: { md } }));
 }
 const { md } = Astro.props;
 const { Content } = await render(md);
 ---
+
 <Layout title={md.data.title}>
-    <Prose justify>
-        <Content slot="body" />
-        <span slot="by">email</span>
-        <span slot="credit">lew@ily.rs</span>
-    </Prose>
+  <Prose justify>
+    <Content slot="body" />
+    <span slot="by">email</span>
+    <span slot="credit">lew@ily.rs</span>
+  </Prose>
 </Layout>

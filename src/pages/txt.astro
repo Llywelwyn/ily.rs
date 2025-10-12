@@ -1,20 +1,21 @@
 ---
-import Layout from '../layouts/Layout.astro'
-import Prose from '../components/Prose.astro'
+import Layout from "../layouts/Layout.astro";
+import Prose from "../components/Prose.astro";
 
-import { getCollection } from 'astro:content';
-const mds = (await getCollection(
-  'md',
-  ({ data }) => import.meta.env.PROD ? data.draft !== true : true
-)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+import { getCollection } from "astro:content";
+const mds = (
+  await getCollection("md", ({ data }) =>
+    import.meta.env.PROD ? data.draft !== true : true,
+  )
+).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <Layout title="posts">
-    <Prose br>
-        <ul slot="body">
-            {mds.map(md => (<li>{md.data.title}</li>))}
-        </ul>
-        <span slot="by">email</span>
-        <span slot="credit">lew@ily.rs</span>
-    </Prose>
+  <Prose br>
+    <ul slot="body">
+      {mds.map((md) => <li>{md.data.title}</li>)}
+    </ul>
+    <span slot="by">email</span>
+    <span slot="credit">lew@ily.rs</span>
+  </Prose>
 </Layout>

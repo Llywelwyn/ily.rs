@@ -196,7 +196,7 @@
         idleAnimationFrame += 1;
     }
 
-    const heartColors = ['#ffbbbb', '#bbffbb', '#bbbbff'];
+    const heartColors = ['#ffaaaa', '#aaffaa', '#aaaaff'];
 
     function explodeHearts() {
         const parent = nekoEl.parentElement;
@@ -207,19 +207,22 @@
         const centerY = rect.top + rect.height / 2 + scrollTop;
 
         for (let i = 0; i < 10; i++) {
+            const rotation = document.createElement('div');
+            rotation.style.position = 'absolute';
+            rotation.style.transform = `rotate(${(Math.random() - 0.5) * 20}deg)`;
+            rotation.style.left = `${centerX + ((Math.random() - 0.5) * 40) - 16}px`;
+            rotation.style.top = `${centerY + ((Math.random() - 0.5) * 40) - 16}px`;
+
+
             const heart = document.createElement('div');
             heart.className = 'heart';
             heart.textContent = '❤';
-            const offsetX = (Math.random() - 0.5) * 50;
-            const offsetY = (Math.random() - 0.5) * 50;
-            heart.style.left = `${centerX + offsetX - 16}px`;
-            heart.style.top = `${centerY + offsetY - 16}px`;
-            heart.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 360}deg)`;
             heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
-            parent.appendChild(heart);
+            rotation.appendChild(heart);
+            parent.appendChild(rotation);
 
             setTimeout(() => {
-                parent.removeChild(heart);
+                parent.removeChild(rotation);
             }, 1000);
         }
     }
@@ -227,8 +230,8 @@
     const style = document.createElement('style');
     style.innerHTML = `
 		  @keyframes heartBurst {
-			  0% { transform: scale(0) translateY(0); opacity: 1; }
-			  100% { transform: scale(1) translateY(-10px); opacity: 0; }
+			  0% { transform: scale(0); opacity: 1; }
+			  100% { transform: scale(1); opacity: 0; }
 		  }
 		  .heart {
 			  position: absolute;

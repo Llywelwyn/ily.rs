@@ -7,7 +7,11 @@
 
     if (isReducedMotion) return;
 
+    const footprints = ['*', '.', ',', '`', ';', '"'];
+    const heartColors = ['#ffaaaa', '#aaffaa', '#aaaaff'];
+
     const nekoEl = document.createElement("div");
+    nekoEl.addEventListener('click', explodeHearts)
 
     let nekoPosX = 32;
     let nekoPosY = 32;
@@ -94,7 +98,7 @@
         nekoEl.style.imageRendering = "pixelated";
         nekoEl.style.left = `${nekoPosX - 16}px`;
         nekoEl.style.top = `${nekoPosY - 16}px`;
-        nekoEl.style.zIndex = 2147483647;
+        nekoEl.style.zIndex = 2147483646;
 
         let nekoFile = "./oneko.gif"
         const curScript = document.currentScript
@@ -111,6 +115,36 @@
         });
 
         window.requestAnimationFrame(onAnimationFrame);
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+		  @keyframes heartBurst {
+			  0% { transform: scale(0); opacity: 1; }
+			  100% { transform: scale(1); opacity: 0; }
+		  }
+		  .heart {
+			  font-size: 2em;
+			  animation: heartBurst 1s ease-out;
+		  }
+
+          @keyframes fadePrints {
+              0% { opacity: 0.75; }
+              100% { opacity: 0; }
+          }
+
+          .oneko-element {
+              position: absolute;
+              pointer-events: none;
+              z-index: 2147483645;
+              animation-fill-mode: forwards;
+          }
+
+          .footprint {
+              animation: fadePrints 3s ease-out;
+          }
+	  `;
+
+        document.head.appendChild(style);
     }
 
     let lastFrameTimestamp;
@@ -196,7 +230,6 @@
         idleAnimationFrame += 1;
     }
 
-    const heartColors = ['#ffaaaa', '#aaffaa', '#aaaaff'];
 
     function explodeHearts() {
         const parent = nekoEl.parentElement;
@@ -212,37 +245,38 @@
             rotation.style.transform = `rotate(${(Math.random() - 0.5) * 20}deg)`;
             rotation.style.left = `${centerX + ((Math.random() - 0.5) * 40) - 16}px`;
             rotation.style.top = `${centerY + ((Math.random() - 0.5) * 40) - 16}px`;
-
-
             const heart = document.createElement('div');
-            heart.className = 'heart';
+            heart.classList.add('oneko-element', 'heart');
             heart.textContent = '❤';
             heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
             rotation.appendChild(heart);
             parent.appendChild(rotation);
-
             setTimeout(() => {
                 parent.removeChild(rotation);
             }, 1000);
         }
     }
 
-    const style = document.createElement('style');
-    style.innerHTML = `
-		  @keyframes heartBurst {
-			  0% { transform: scale(0); opacity: 1; }
-			  100% { transform: scale(1); opacity: 0; }
-		  }
-		  .heart {
-			  position: absolute;
-			  font-size: 2em;
-			  animation: heartBurst 1s ease-out;
-			  animation-fill-mode: forwards;
-		  }
-	  `;
 
-    document.head.appendChild(style);
-    nekoEl.addEventListener('click', explodeHearts)
+    function temporary_sprite_at(x, y, ms) {
+        const tmp = document.createElement("div");
+        tmp.style.left = `${x - 6 + (window.scrollX || document.documentElement.scrollLeft)}px`;
+        tmp.style.top = `${y - 6 + (window.scrollY || document.documentElement.scrollTop)}px`;
+        tmp.classList.add('oneko-element');
+        nekoEl.parentElement.appendChild(tmp);
+        setTimeout(() => {
+            if (tmp.parentElement) {
+                tmp.parentElement.removeChild(tmp);
+            }
+        }, ms);
+        return tmp;
+    }
+
+    function footprint(x, y) {
+        const mark = temporary_sprite_at(x, y, 3000);
+        mark.textContent = footprints[Math.floor(Math.random() * footprints.length)];
+        mark.classList.add('footprint');
+    }
 
     function frame() {
         frameCount += 1;
@@ -272,6 +306,8 @@
         direction += diffX / distance > 0.5 ? "W" : "";
         direction += diffX / distance < -0.5 ? "E" : "";
         setSprite(direction, frameCount);
+
+        if (frameCount % 1 === 0) footprint(nekoPosX, nekoPosY);
 
         nekoPosX -= (diffX / distance) * nekoSpeed;
         nekoPosY -= (diffY / distance) * nekoSpeed;
